@@ -93,16 +93,38 @@ const subVideo = async(req,res,next) => {
 
        const subscribedChannels = user.subscribedUser;
 
-       const list = Promise.all(
+       const list = await Promise.all(
         subscribedChannels.map(channelId => {
             return Video.find({userId:channelId})
           })
        );
-       res.status(200).json({success:true,list})
+       const videos = list.flat().sort((a,b) => b.createdAt - a.createdAt);
+       res.status(200).json({success:true,videos})
+    } catch (error) {
+       next(error)
+    }
+}
+
+const tagsVideo = async(req,res,next) => {
+    const tags = req.query.tags.split(",");
+    
+    try {
+        const videos = await Video.find({tags:{$in:tags}}).limit(20);
+        res.status(200).json({success:true,videos})
+    } catch (error) {
+       next(error)
+    }
+}
+
+const searchVideo = async(req,res,next) => {
+    const query = req.query.q;
+    try {
+        const videos = await Video.find({title:{$regex: query,$options:"i"}}).limit(20);
+        res.status(200).json({success:true,videos})
     } catch (error) {
        next(error)
     }
 }
 
 
-module.exports = {createVideo,getVideo,deleteVideo,updateVideo,addView,randomVideo,trendVideo,subVideo};
+module.exports = {createVideo,searchVideo,tagsVideo,getVideo,deleteVideo,updateVideo,addView,randomVideo,trendVideo,subVideo};

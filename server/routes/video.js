@@ -1,5 +1,5 @@
 const express = require('express');
-const { createVideo, deleteVideo, updateVideo, getVideo, addView, trendVideo, randomVideo, subVideo } = require('../controllers/video');
+const { createVideo, deleteVideo, updateVideo, getVideo, addView, trendVideo, randomVideo, subVideo, tagsVideo, searchVideo } = require('../controllers/video');
 const verifyToken = require('../middleware/verifyToken');
 const router = express.Router();
 
@@ -16,6 +16,8 @@ router.put("/view/:id", addView)
 router.get("/trend", trendVideo)
 router.get("/random", randomVideo)
 router.get("/sub",verifyToken, subVideo)
+router.get("/tags", tagsVideo)
+router.get("/search", searchVideo)
 
 
 module.exports = router
